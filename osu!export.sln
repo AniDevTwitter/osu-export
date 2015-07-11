@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu!export", "osu!export.csproj", "{41F2AB2A-36EA-4175-8D6E-4CB5BCD7A1A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu!export.wpf", "osu!export.wpf\osu!export.wpf.csproj", "{F998BF31-B0A6-451C-865F-8EF7EACA891C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu!export.core", "osu!export.core\osu!export.core.csproj", "{D7CCE327-6A8A-4D61-A80C-ACB6CBB69CCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{41F2AB2A-36EA-4175-8D6E-4CB5BCD7A1A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41F2AB2A-36EA-4175-8D6E-4CB5BCD7A1A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41F2AB2A-36EA-4175-8D6E-4CB5BCD7A1A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F998BF31-B0A6-451C-865F-8EF7EACA891C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F998BF31-B0A6-451C-865F-8EF7EACA891C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F998BF31-B0A6-451C-865F-8EF7EACA891C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F998BF31-B0A6-451C-865F-8EF7EACA891C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7CCE327-6A8A-4D61-A80C-ACB6CBB69CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7CCE327-6A8A-4D61-A80C-ACB6CBB69CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7CCE327-6A8A-4D61-A80C-ACB6CBB69CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7CCE327-6A8A-4D61-A80C-ACB6CBB69CCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
