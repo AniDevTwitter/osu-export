@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Microsoft.Win32;
-using MoreLinq;
-using System.Linq;
-using System.ComponentModel;
+﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace osu_export.core
@@ -18,22 +17,15 @@ namespace osu_export.core
             this.path = path;
         }
 
-        public BackgroundWorker ExportSongs(string folder)
+        public IEnumerable<OsuBeatmapFolder> BeatmapsFolders
         {
-            var retVal = new BackgroundWorker()
+            get
             {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = false
-            };
-            var i = 0;
-            var count = this.CountBeatmapsFolders;
-            Directory.CreateDirectory(folder);
-            retVal.DoWork += (sender, e) => this.BeatmapsFolders.AsParallel().ForAll(x =>
-            {
-                retVal.ReportProgress((int)Math.Round((((double)Interlocked.Increment(ref i) / (double)count)) * 100));
-                x.ExportSong(folder);
-            });
-            return retVal;
+                foreach (var songDir in Directory.GetDirectories(Path.Combine(this.path, OsuBeatmapFolder.Subpath)))
+                {
+                    yield return new OsuBeatmapFolder(songDir);
+                }
+            }
         }
 
         public int CountBeatmapsFolders
@@ -41,17 +33,6 @@ namespace osu_export.core
             get
             {
                 return Directory.GetDirectories(Path.Combine(this.path, OsuBeatmapFolder.Subpath)).Length;
-            }
-        }
-
-        public IEnumerable<OsuBeatmapFolder> BeatmapsFolders
-        {
-            get
-            {
-                foreach(var songDir in Directory.GetDirectories(Path.Combine(this.path, OsuBeatmapFolder.Subpath)))
-                {
-                    yield return new OsuBeatmapFolder(songDir);
-                }
             }
         }
 
@@ -70,6 +51,24 @@ namespace osu_export.core
             }
             path = default(string);
             return false;
+        }
+
+        public BackgroundWorker ExportSongs(string folder)
+        {
+            var retVal = new BackgroundWorker()
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = false
+            };
+            var i = 0;
+            var count = this.CountBeatmapsFolders;
+            Directory.CreateDirectory(folder);
+            retVal.DoWork += (sender, e) => this.BeatmapsFolders.AsParallel().ForAll(x =>
+            {
+                retVal.ReportProgress((int)Math.Round((((double)Interlocked.Increment(ref i) / (double)count)) * 100));
+                x.ExportSong(folder);
+            });
+            return retVal;
         }
     }
 }

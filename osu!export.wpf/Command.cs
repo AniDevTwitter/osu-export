@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Windows.Input;
 
 namespace osu_export.wpf
@@ -9,8 +8,6 @@ namespace osu_export.wpf
         private readonly Action<object> action;
         private readonly Predicate<object> canExecute;
         private bool isEnabled;
-
-        public event EventHandler CanExecuteChanged;
 
         public Command(Action<object> action, Predicate<object> canExecute)
         {
@@ -24,6 +21,8 @@ namespace osu_export.wpf
             this.canExecute = null;
             this.isEnabled = true;
         }
+
+        public event EventHandler CanExecuteChanged;
 
         public bool IsEnabled
         {

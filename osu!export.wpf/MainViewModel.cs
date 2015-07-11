@@ -1,35 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using osu_export.core;
+﻿using osu_export.core;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Windows.Threading;
 
 namespace osu_export.wpf
 {
     public class MainViewModel : AbstractViewModel<MainViewModel>
     {
         private readonly ObservableCollection<string> errors;
+        private Command export;
         private string installPath;
         private string outputFolder;
         private int progress;
-        private Command export;
 
         public MainViewModel()
         {
             this.errors = new ObservableCollection<string>();
             this.progress = 0;
             this.outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), @"osu!export");
-            if(!OsuFolder.FolderPathFromRegistry(out this.installPath))
+            if (!OsuFolder.FolderPathFromRegistry(out this.installPath))
             {
                 this.installPath = string.Empty;
             }
             Directory.CreateDirectory(this.outputFolder);
             this.export = new Command(this.ExportAction, this.CanExport);
             ExportLogger.GetInstance().ErrorLogged += OnError;
+        }
+
+        public ObservableCollection<string> Errors
+        {
+            get
+            {
+                return this.errors;
+            }
         }
 
         public Command Export
@@ -40,16 +45,44 @@ namespace osu_export.wpf
             }
         }
 
-        private void OnError(object sender, ErrorLoggedEventArgs e)
-        {
-            this.errors.Add("Error : " + e.Description + " [" + e.Exception.ToString() + "]");
-        }
-
-        public ObservableCollection<string> Errors
+        public string InstallPath
         {
             get
             {
-                return this.errors;
+                return this.installPath;
+            }
+            set
+            {
+                this.installPath = value;
+                this.OnPropertyChanged(this.NameOf(x => x.InstallPath));
+                this.export.RaiseCanExecuteChanged();
+            }
+        }
+
+        public string OutputFolder
+        {
+            get
+            {
+                return this.outputFolder;
+            }
+            set
+            {
+                this.outputFolder = value;
+                this.OnPropertyChanged(this.NameOf(x => x.OutputFolder));
+                this.export.RaiseCanExecuteChanged();
+            }
+        }
+
+        public int Progress
+        {
+            get
+            {
+                return this.progress;
+            }
+            set
+            {
+                this.progress = value;
+                this.OnPropertyChanged(this.NameOf(x => x.Progress));
             }
         }
 
@@ -79,45 +112,9 @@ namespace osu_export.wpf
             this.Progress = e.ProgressPercentage;
         }
 
-        public int Progress
+        private void OnError(object sender, ErrorLoggedEventArgs e)
         {
-            get
-            {
-                return this.progress;
-            }
-            set
-            {
-                this.progress = value;
-                this.OnPropertyChanged(this.NameOf(x => x.Progress));
-            }
-        }
-
-        public string OutputFolder
-        {
-            get
-            {
-                return this.outputFolder;
-            }
-            set
-            {
-                this.outputFolder = value;
-                this.OnPropertyChanged(this.NameOf(x => x.OutputFolder));
-                this.export.RaiseCanExecuteChanged();
-            }
-        }
-
-        public string InstallPath
-        {
-            get
-            {
-                return this.installPath;
-            }
-            set
-            {
-                this.installPath = value;
-                this.OnPropertyChanged(this.NameOf(x => x.InstallPath));
-                this.export.RaiseCanExecuteChanged();
-            }
+            App.Current.Dispatcher.Invoke(() => this.errors.Add("Error : " + e.Description + " [" + e.Exception.ToString() + "]"));
         }
     }
 }

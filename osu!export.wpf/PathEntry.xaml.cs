@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-
 namespace osu_export.wpf
 {
     /// <summary>
@@ -34,6 +33,13 @@ namespace osu_export.wpf
         {
             this.pathBrowse = new Command(this.OnPathBrowse);
             InitializeComponent();
+        }
+
+        public enum PathMode
+        {
+            FolderSelection,
+            FileSelection,
+            FileSave
         }
 
         public string Filters
@@ -100,13 +106,6 @@ namespace osu_export.wpf
                     }
                     break;
             }
-        }
-
-        public enum PathMode
-        {
-            FolderSelection,
-            FileSelection,
-            FileSave
         }
     }
 }

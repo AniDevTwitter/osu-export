@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace osu_export.core
 {
@@ -24,8 +21,9 @@ namespace osu_export.core
         {
             get
             {
-                var retVal = Path.Combine(this.path, "bg.jpg");
-                return File.Exists(retVal) ? retVal : null;
+                var imageFiles = Directory.EnumerateFiles(this.path, "*.jpg").Concat(Directory.EnumerateFiles(this.path, ".png")).ToList();
+                // here a method to determine the artworkPath to use would be great
+                return imageFiles.Any() ? imageFiles.First() : null;
             }
         }
 
@@ -43,7 +41,7 @@ namespace osu_export.core
             {
                 var beatmap = this.Beatmap;
                 var copiedFilePath = Path.Combine(folderPath, beatmap.Title + beatmap.FileExtension);
-                File.Copy(Path.Combine(this.path, beatmap.FileName.TrimStart(' ')), copiedFilePath, true);
+                File.Copy(Path.Combine(this.path, beatmap.FileName), copiedFilePath, true);
                 using (var copiedFile = TagLib.File.Create(copiedFilePath))
                 {
                     copiedFile.RemoveTags(TagLib.TagTypes.Id3v2);
@@ -62,6 +60,5 @@ namespace osu_export.core
                 ExportLogger.GetInstance().LogError(ex, "put info");
             }
         }
-
     }
 }
