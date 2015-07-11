@@ -152,7 +152,8 @@ namespace osu_export
 
                             if (line.Contains("Title:"))
                             {
-                                metadata["title"] = line.Substring(line.LastIndexOf(":") + 1).Replace(" (TV Size)", "");
+                                metadata["title"] = line.Substring(line.LastIndexOf(":") + 1).Replace(" (TV Size)", "").Trim(Path.GetInvalidPathChars());
+                                
                             }
 
                             if (line.Contains("Artist:"))
@@ -181,7 +182,7 @@ namespace osu_export
                         {
                             MessageBox.Show("An error occurred while trying to copy a file! \n\n" + error.Message, "osu!export error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                         }
-
+                        
                         this.Invoke((MethodInvoker)delegate
                         {
                             progressBar1.PerformStep();
