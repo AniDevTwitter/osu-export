@@ -41,10 +41,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Executer.cs" />
     <Compile Include="ExportLogger.cs" />
     <Compile Include="OsuBeatmap.cs" />
     <Compile Include="OsuFolder.cs" />
     <Compile Include="OsuBeatmapFolder.cs" />
+    <Compile Include="PathExts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MoreLinq, Version=1.0.16107.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">

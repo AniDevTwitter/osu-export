@@ -10,19 +10,46 @@ namespace osu_export.core
         private const string ArtistKey = "Artist";
         private const string AudioFilenameKey = "AudioFilename";
         private const string TitleKey = "Title";
+        
         private readonly IReadOnlyDictionary<string, string> metadatas;
+        private readonly bool audioFileExits;
 
         private readonly HashSet<string> ValidMetadas = new HashSet<string>()
         {
             OsuBeatmap.TitleKey, OsuBeatmap.AudioFilenameKey, OsuBeatmap.ArtistKey
         };
 
-        public OsuBeatmap(string path)
+        public bool ValidForExport
         {
-            var beatmapfile = Directory.GetFiles(path, "*.osu").First();
-            var potentiallyOnlyMetadatas = File.ReadAllLines(beatmapfile).TakeWhile(x => !x.Contains("[HitObjects]"));
-            this.metadatas = potentiallyOnlyMetadatas.Select(x => this.MetadataOrNull(x))
-                .Where(x => x != null).ToDictionary(x => x.Item1, x => x.Item2);
+            get
+            {
+                return this.audioFileExits
+                    && this.metadatas.ContainsKey(ArtistKey)
+                    && this.metadatas.ContainsKey(AudioFilenameKey)
+                    && this.metadatas.ContainsKey(TitleKey);
+            }
+        }
+
+        public OsuBeatmap(string folderPath)
+        {
+            var beatmapfile = Directory.GetFiles(folderPath, "*.osu").FirstOrDefault();
+            if(!string.IsNullOrWhiteSpace(beatmapfile))
+            {
+                var potentiallyOnlyMetadatas = File.ReadAllLines(beatmapfile).TakeWhile(x => !x.Contains("[HitObjects]"));
+                this.metadatas = potentiallyOnlyMetadatas.Select(x => this.MetadataOrNull(x))
+                    .Where(x => x != null).ToDictionary(x => x.Item1, x => x.Item2);
+                this.audioFileExits = File.Exists(Path.Combine(folderPath, this.FileName));
+            }
+            else
+            {
+                this.audioFileExits = false;  // lazy to create another bool var for this
+            }            
+        }
+
+        public string FormattedOutputFilename(string format = "%ARTIST% - %TITLE%")
+        {
+            //makes this generic, matching every tag like %ARTIST% by the equivalent in metadatas
+            return format.Replace("%ARTIST%", this.Artist).Replace("%TITLE%", this.Title + this.FileExtension);
         }
 
         public string Artist

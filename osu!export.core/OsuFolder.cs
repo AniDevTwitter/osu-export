@@ -63,11 +63,18 @@ namespace osu_export.core
             var i = 0;
             var count = this.CountBeatmapsFolders;
             Directory.CreateDirectory(folder);
-            retVal.DoWork += (sender, e) => this.BeatmapsFolders.AsParallel().ForAll(x =>
+            retVal.DoWork += (sender, e) =>
             {
-                retVal.ReportProgress((int)Math.Round((((double)Interlocked.Increment(ref i) / (double)count)) * 100));
-                x.ExportSong(folder);
-            });
+                using (var fileWriteExecuter = new Executer()) // subclass executer to give a more specialized class
+                {
+                    this.BeatmapsFolders.AsParallel().Where(x => x.ValidForExport).ForAll(x =>
+                    {
+                        retVal.ReportProgress((int)Math.Round((((double)Interlocked.Increment(ref i) / (double)count)) * 100));
+                        x.ExportSong(fileWriteExecuter, folder);
+                    });
+                }
+            };
+
             return retVal;
         }
     }
